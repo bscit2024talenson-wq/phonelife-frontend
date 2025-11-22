@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}PhoneLife Tracker - Sustainable Smartphone Choices{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ==================== LANDING PAGE STYLES ==================== */
+    
+    /* Hero Section */
+    .hero {
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="200" cy="400" r="300" fill="rgba(255,255,255,0.05)"/><circle cx="1000" cy="200" r="400" fill="rgba(255,255,255,0.03)"/></svg>') no-repeat center;
+        background-size: cover;
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        padding: 0 20px;
+    }
+
+    .hero h1 {
+        font-family: var(--font-heading);
+        font-size: 64px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 24px;
+        margin-bottom: 40px;
+        opacity: 0.95;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 16px 40px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s;
+        display: inline-block;
+    }
+
+    .btn-primary-hero {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-primary-hero:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary-hero {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary-hero:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 100px 20px;
+        background: #f5f5f5;
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        text-align: center;
+        font-family: var(--font-heading);
+        font-size: 48px;
+        margin-bottom: 20px;
+        color: #2d3436;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 20px;
+        color: #636e72;
+        margin-bottom: 60px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #2d3436;
+    }
+
+    .feature-card p {
+        color: #636e72;
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats {
+        padding: 80px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .stats-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-family: var(--font-heading);
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+
+    /* CTA Section */
+    .cta {
+        padding: 100px 20px;
+        text-align: center;
+        background: white;
+    }
+
+    .cta h2 {
+        font-family: var(--font-heading);
+        font-size: 48px;
+        margin-bottom: 20px;
+        color: #2d3436;
+    }
+
+    .cta p {
+        font-size: 20px;
+        color: #636e72;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 40px;
+        }
+
+        .hero p {
+            font-size: 18px;
+        }
+
+        .section-title {
+            font-size: 36px;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>📱 Extend Your Phone's Life. Save the Planet.</h1>
+            <p>AI-powered predictions for smarter, more sustainable smartphone decisions</p>
+            <div class="hero-buttons">
+                <a href="/calculator" class="btn btn-primary-hero">Check My Phone's Health</a>
+                <a href="/awareness" class="btn btn-secondary-hero">Learn About E-Waste</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features">
+        <div class="features-container">
+            <h2 class="section-title">How PhoneLife Tracker Helps You</h2>
+            <p class="section-subtitle">Make informed decisions about your smartphone's lifecycle</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Accurate Predictions</h3>
+                    <p>AI-powered analysis of 1000+ smartphone models to predict your device's remaining lifespan</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">♻️</div>
+                    <h3>Recycling Centers</h3>
+                    <p>Find certified e-waste recycling centers near you to responsibly dispose of old devices</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3>Maintenance Tips</h3>
+                    <p>Get personalized recommendations to extend your phone's life and save money</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>Environmental Impact</h3>
+                    <p>Track the positive environmental impact of your sustainable smartphone choices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Phone Models</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">80+</div>
+                <div class="stat-label">Brands Covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Users Helped</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Accuracy Rate</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta">
+        <h2>Ready to Make Smarter Choices?</h2>
+        <p>Join thousands of users making sustainable smartphone decisions</p>
+        <a href="/calculator" class="btn btn-primary-hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">Get Started Now</a>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any landing page specific JavaScript here
+    console.log('PhoneLife Tracker - Landing Page Loaded');
+</script>
+{% endblock %}

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PhoneLife Tracker{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Base Styles -->
+    <style>
+        /* ==================== RESET & BASE ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colors */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-hover: #764ba2;
+            --success-green: #38ef7d;
+            --warning-orange: #ffa500;
+            --danger-red: #f5576c;
+            --dark-bg: #1a1a2e;
+            --light-bg: #f5f5f5;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --white: #ffffff;
+            
+            /* Typography */
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            /* Spacing */
+            --nav-height: 70px;
+            --container-max: 1200px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--light-bg);
+        }
+
+        /* ==================== NAVBAR STYLES ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: transparent;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 0 30px;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Logo */
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .navbar.scrolled .navbar-logo {
+            color: var(--primary-color);
+        }
+
+        .navbar-logo .logo-icon {
+            font-size: 28px;
+        }
+
+        /* Navigation Links */
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .navbar.scrolled .navbar-menu a {
+            color: var(--text-dark);
+        }
+
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-menu a:hover::after,
+        .navbar-menu a.active::after {
+            width: 100%;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar.scrolled .navbar-menu a:hover {
+            color: var(--primary-hover);
+        }
+
+        /* User Avatar */
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-login {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .navbar.scrolled .btn-login {
+            background: var(--primary-gradient);
+            border: none;
+            color: var(--white);
+        }
+
+        .btn-login:hover {
+            background: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* User Avatar (when logged in) */
+        .user-avatar-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid var(--white);
+            transition: transform 0.3s;
+        }
+
+        .user-avatar-nav:hover {
+            transform: scale(1.1);
+        }
+
+        /* Mobile Menu Toggle */
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .navbar-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            transition: all 0.3s;
+        }
+
+        .navbar.scrolled .navbar-toggle span {
+            background: var(--text-dark);
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .navbar-toggle {
+                display: flex;
+            }
+
+            .navbar-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--white);
+                flex-direction: column;
+                padding: 80px 30px 30px;
+                gap: 30px;
+                box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s ease;
+            }
+
+            .navbar-menu.active {
+                right: 0;
+            }
+
+            .navbar-menu a {
+                color: var(--text-dark);
+                font-size: 18px;
+            }
+        }
+
+        /* ==================== FOOTER STYLES ==================== */
+        .footer {
+            background: var(--dark-bg);
+            color: var(--white);
+            padding: 60px 30px 30px;
+            margin-top: 80px;
+        }
+
+        .footer-container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: var(--font-heading);
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-top: var(--nav-height);
+            min-height: calc(100vh - var(--nav-height));
+        }
+                /* ==================== AUTH MODAL STYLES ==================== */
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 9998;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            width: 95%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 9999;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+        }
+
+        .auth-modal.active {
+            display: block;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .modal-close:hover {
+            background: #667eea;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            color: #2d3436;
+        }
+
+        .modal-subtitle {
+            color: #636e72;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3436;
+            font-size: 14px;
+        }
+
+        .label-icon {
+            font-size: 16px;
+        }
+
+        .auth-modal input[type="text"],
+        .auth-modal input[type="email"],
+        .auth-modal input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+
+        .auth-modal input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            opacity: 0.5;
+        }
+
+        .password-toggle:hover {
+            opacity: 1;
+        }
+
+        .btn-modal-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-modal-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #636e72;
+            font-size: 14px;
+        }
+
+        .link-primary {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .link-primary:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <a href="/" class="navbar-logo">
+                <span class="logo-icon">📱</span>
+                <span>PhoneLife Tracker</span>
+            </a>
+
+            <!-- Navigation Menu -->
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/calculator" class="nav-link">Calculator</a></li>
+                <li><a href="/awareness" class="nav-link">Awareness</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+            </ul>
+
+            <!-- User Section -->
+            <div class="navbar-user">
+                <!-- Login Button (shown when logged out) -->
+                <a href="#" class="btn-login" id="loginBtn" onclick="openLoginModal(); return false;">
+                    Log In
+                </a>
+                
+                <!-- User Avatar (shown when logged in, hidden by default) -->
+                <div class="user-avatar-nav" id="userAvatarNav" style="display: none;" onclick="toggleUserDropdown()">
+                    <span id="userInitialsNav">U</span>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- About Section -->
+            <div class="footer-section">
+                <h3>📱 PhoneLife Tracker</h3>
+                <p>Making smartphones sustainable through AI-powered predictions and awareness.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/calculator">Shelf Life Calculator</a></li>
+                    <li><a href="/awareness">E-Waste Awareness</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="#">Recycling Centers</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">How It Works</a></li>
+                    <li><a href="#">Repair Guides</a></li>
+                    <li><a href="#">E-Waste Facts</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal -->
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 PhoneLife Tracker. Built with ❤️ for sustainable technology.</p>
+            <p style="font-size: 14px; margin-top: 10px;">Data from 1000+ smartphone models | Helping users make sustainable choices</p>
+        </div>
+    </footer>
+    <div class="modal-overlay" id="authModalOverlay" onclick="closeAuthModal()"></div>
+    
+    <!-- Login Modal -->
+    <div class="auth-modal" id="loginModal">
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
+        
+        <div class="modal-header">
+            <div class="modal-icon">🔐</div>
+            <h2>Welcome Back</h2>
+            <p class="modal-subtitle">Sign in to PhoneLife Tracker</p>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="loginEmail">
+                    <span class="label-icon">📧</span>
+                    Email Address
+                </label>
+                <input 
+                    type="email" 
+                    id="loginEmail" 
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">
+                    <span class="label-icon">🔒</span>
+                    Password
+                </label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="Enter your password"
+                        required
+                        minlength="6"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">
+                        👁️
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-modal-primary" id="loginBtn">
+                <span class="btn-text">Sign In</span>
+            </button>
+        </form>
+        
+        <p class="modal-footer">
+            Don't have an account? 
+            <a href="#" onclick="switchToSignup(); return false;" class="link-primary">Create one now</a>
+        </p>
+    </div>
+    
+    <!-- Signup Modal -->
+    <div class="auth-modal" id="signupModal">
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
+        
+        <div class="modal-header">
+            <div class="modal-icon">🚀</div>
+            <h2>Create Your Account</h2>
+            <p class="modal-subtitle">Join PhoneLife Tracker today</p>
+        </div>
+        
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label for="signupName">
+                    <span class="label-icon">👤</span>
+                    Full Name
+                </label>
+                <input 
+                    type="text" 
+                    id="signupName" 
+                    placeholder="e.g., Talenson Murugan"
+                    required
+                    minlength="2"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="signupEmail">
+                    <span class="label-icon">📧</span>
+                    Email Address
+                </label>
+                <input 
+                    type="email" 
+                    id="signupEmail" 
+                    placeholder="e.g., talenson@example.com"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="signupPassword">
+                    <span class="label-icon">🔒</span>
+                    Password
+                </label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="signupPassword" 
+                        placeholder="Minimum 6 characters"
+                        required
+                        minlength="6"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('signupPassword')">
+                        👁️
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-modal-primary" id="signupBtn">
+                <span class="btn-text">Create Account</span>
+            </button>
+        </form>
+        
+        <p class="modal-footer">
+            Already have an account? 
+            <a href="#" onclick="switchToLogin(); return false;" class="link-primary">Sign in here</a>
+        </p>
+    </div>
+
+
+    <!-- Base JavaScript -->
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const navbarToggle = document.getElementById('navbarToggle');
+        const navbarMenu = document.getElementById('navbarMenu');
+
+        navbarToggle.addEventListener('click', () => {
+            navbarMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navbarToggle.contains(e.target) && !navbarMenu.contains(e.target)) {
+                navbarMenu.classList.remove('active');
+            }
+        });
+
+        // Active page highlighting
+        const currentPage = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+
+        // Placeholder functions (we'll implement these later)
+        function openLoginModal() {
+            alert('Login modal coming soon!');
+        }
+
+        function toggleUserDropdown() {
+            alert('User dropdown coming soon!');
+        }
+
+                // Placeholder functions (we'll implement these later)
+        function openLoginModal() {
+            document.getElementById('authModalOverlay').classList.add('active');
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModalOverlay').classList.remove('active');
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('signupModal').classList.remove('active');
+        }
+
+        function switchToSignup() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('signupModal').classList.add('active');
+        }
+
+        function switchToLogin() {
+            document.getElementById('signupModal').classList.remove('active');
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // TODO: Connect to your actual login API
+            alert('Login functionality will be connected to your backend API');
+            console.log('Login attempt:', email);
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            // TODO: Connect to your actual signup API
+            alert('Signup functionality will be connected to your backend API');
+            console.log('Signup attempt:', name, email);
+        }
+
+        function toggleUserDropdown() {
+            alert('User dropdown coming soon!');
+        }
+
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
